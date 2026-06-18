@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inscription</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #eef5ff, #f7f9fc);
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .box {
+      width: 100%;
+      max-width: 420px;
+      background: white;
+      padding: 32px 28px;
+      border-radius: 16px;
+      box-shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
+    }
+    h2 {
+      margin: 0 0 8px;
+      text-align: center;
+      color: #0f172a;
+      font-size: 28px;
+    }
+    .subtitle {
+      text-align: center;
+      color: #64748b;
+      font-size: 14px;
+      margin-bottom: 18px;
+    }
+    input {
+      width: 100%;
+      padding: 12px 14px;
+      margin-bottom: 12px;
+      box-sizing: border-box;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      outline: none;
+      font-size: 14px;
+    }
+    input:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(90deg, #0d6efd, #2563eb);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 15px;
+      transition: transform 0.1s ease;
+    }
+    button:hover { transform: translateY(-1px); }
+    .message {
+      margin-top: 10px;
+      font-size: 14px;
+      min-height: 20px;
+      text-align: center;
+    }
+    .success { color: #15803d; }
+    .error { color: #dc2626; }
+    .footer {
+      text-align: center;
+      margin-top: 14px;
+      font-size: 14px;
+    }
+    .footer a {
+      color: #2563eb;
+      text-decoration: none;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>Créer un compte</h2>
+    <div class="subtitle">Remplissez vos informations pour commencer</div>
+    <form id="registerForm" novalidate>
+      <input type="text" id="nom" placeholder="Nom" required />
+      <input type="text" id="prenom" placeholder="Prénom" />
+      <input type="email" id="email" placeholder="Email" required />
+      <input type="password" id="password" placeholder="Mot de passe" required minlength="6" />
+      <button type="submit">S'inscrire</button>
+    </form>
+    <div id="message" class="message"></div>
+    <div class="footer">
+      <a href="login.html">Déjà inscrit ? Se connecter</a>
+    </div>
+  </div>
+
+  <script src="js/auth.js"></script>
+  <script>
+    const form = document.getElementById('registerForm');
+    const message = document.getElementById('message');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      setMessage(message, '', '');
+
+      const nom = document.getElementById('nom').value.trim();
+      const prenom = document.getElementById('prenom').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+
+      if (!nom || !email || !password) {
+        setMessage(message, 'Veuillez remplir tous les champs requis.', 'error');
+        return;
+      }
+
+      if (password.length < 6) {
+        setMessage(message, 'Le mot de passe doit contenir au moins 6 caractères.', 'error');
+        return;
+      }
+
+      try {
+        const result = await requestJson('/api/register', {
+          method: 'POST',
+          body: JSON.stringify({ nom, prenom, email, password })
+        });
+
+        setMessage(message, result.message, 'success');
+        form.reset();
+
+        setTimeout(() => {
+          window.location.href = 'login.html';
+        }, 1000);
+      } catch (error) {
+        setMessage(message, error.message, 'error');
+      }
+    });
+  </script>
+</body>
+</html>

@@ -5,12 +5,23 @@ const app = express();
 // ✅ Utilise le port fourni par Railway ou 3000 en local
 const PORT = process.env.PORT || 3000;
 
-app.use(cors());
+app.use(cors({
+  origin: [
+    'http://localhost:5173',
+    'https://comptoir-bancaire-frontend.netlify.app'
+  ],
+  credentials: true
+}));
 app.use(express.json());
 
 // ✅ Route racine pour éviter "Cannot GET /"
 app.get('/', (req, res) => {
   res.send('🚀 API Comptoir Bancaire en ligne — Railway est connecté !');
+});
+
+// ✅ Route de santé pour test rapide
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok', port: PORT });
 });
 
 // Simulation de base de données
@@ -81,6 +92,8 @@ app.post('/api/comptes/:id/retrait', (req, res) => {
 });
 
 // --- Lancement du serveur ---
-app.listen(PORT, () => {
-  console.log(`✅ Serveur API lancé sur le port ${PORT}`);
-});
+setTimeout(() => {
+  app.listen(PORT, () => {
+    console.log(`✅ Serveur API lancé sur le port ${PORT}`);
+  });
+}, 1000);

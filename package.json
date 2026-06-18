@@ -1,15 +1,15 @@
 {
   "name": "comptoir-bancaire-api",
   "version": "1.0.0",
-  "description": "",
+  "description": "API bancaire Express déployée sur Railway",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "dev": "npx http-server -p 8080 .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+     "postinstall": "npm rebuild sqlite3 --build-from-source"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["express", "api", "banque", "railway"],
+  "author": "Aniel",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
